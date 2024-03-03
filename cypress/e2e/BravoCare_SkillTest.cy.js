@@ -1,4 +1,7 @@
 import LoginPage from './page_objects/LoginPage';
+import ShoppingPage from './page_objects/ShoppingPage';
+import PaymentPage from './page_objects/PaymentPage';
+import ContactPage from './page_objects/ContactPage';
 
 
 describe("BravoCare Skill Test 1", () => {
@@ -12,18 +15,14 @@ describe("BravoCare Skill Test 1", () => {
     cy.location("href").should("eq", "https://automationexercise.com/product_details/30");
     
     // Step 3: Enter quantity
-    cy.get("div.product-details div > span").click();
-    cy.get("#quantity").clear();
-    cy.get("#quantity").type("5");
-
-    // Step 4: Add to Cart
-    cy.get("div.product-details button").click();
-
-    // Step 5: View Cart from pop-up
-    cy.get("u").click();
-
+      const shoppingPage = new ShoppingPage();
+      shoppingPage.clearQuantityInput();
+      shoppingPage.setQuantity("5");
+      shoppingPage.clickAddToCartButton();
+      shoppingPage.clickViewCartLink();
+  
     // Step 6: Click on Proceed to Checkout
-    cy.contains('Proceed To Checkout').click()
+    cy.contains('Proceed To Checkout').click();
 
     // Step 7: Click on Register/login from pop-up
     cy.get("#do_action u").click();
@@ -56,7 +55,7 @@ describe("BravoCare Skill Test 1", () => {
     cy.get("[data-qa='mobile_number']").type("3168646615");
     cy.get("[data-qa='create-account']").click();
     cy.location("href").should("eq", "https://automationexercise.com/account_created");
-    
+  
     // Step 10: Click on Continue under "Account Created" title
     cy.get("[data-qa='continue-button']").click();
     cy.location("href").should("eq", "https://automationexercise.com/");
@@ -75,13 +74,10 @@ describe("BravoCare Skill Test 1", () => {
     cy.location("href").should("eq", "https://automationexercise.com/payment");
     
     // Step 14: Fill CreditCard information and Confirm Order
-    cy.get("[data-qa='name-on-card']").type("Santiago QA");
-    cy.get("[data-qa='card-number']").type("42424242424242");
-    cy.get("[data-qa='cvc']").type("123");
-    cy.get("[data-qa='expiry-month']").type("12");
-    cy.get("[data-qa='expiry-year']").type("2024");
-    cy.get("[data-qa='pay-button']").click();
-
+    const paymentPage = new PaymentPage();
+    paymentPage.fillPaymentDetails('Santiago Marin', '424242424242424242', '204', '12', '2025');
+    paymentPage.clickPayButton();
+    
     // Step 15: Continue
     cy.get("[data-qa='continue-button']").click();
     cy.location("href").should("eq", "https://automationexercise.com/");
@@ -101,12 +97,13 @@ describe("BravoCare Skill Test 1", () => {
     cy.location("href").should("eq", "https://automationexercise.com/contact_us");
 
     // Step 19: Fill required data and Submit
-    cy.get("[data-qa='name']").type("Santiago Marin");
-    cy.get("[data-qa='email']").type(randomEmail);
-    cy.get("[data-qa='subject']").type("BravoCare SkillTest");
-    cy.get("[data-qa='message']").type("Here trying my first experience on Cypress for BravoCare");
-    cy.contains('Submit').click()
-
+    const contactPage = new ContactPage();
+    contactPage.fillName('Santiago Marin');
+    contactPage.fillEmail(randomEmail);
+    contactPage.fillSubject('BravoCare SkillTest');
+    contactPage.fillMessage('Here trying my first experience on Cypress for BravoCare');
+    contactPage.submitForm();
+    
     // Step 20: Press OK in the pop-up
     cy.on('window:confirm', () => true)
 
